@@ -40,11 +40,14 @@ GasMonitor::GasMonitor(float rising_ppm, float falling_ppm)
 }
 
 AlertState GasMonitor::update(float concentration_ppm) {
-    (void)concentration_ppm;   // supprime le warning "paramètre inutilisé"
-                               // — à retirer dès que tu t'en sers
-
-    // TODO: implémenter les règles ci-dessus.
-
+    
+    if (concentration_ppm <= falling_ppm_) {
+        state_ = AlertState::Normal;
+    } 
+    else if (concentration_ppm >= rising_ppm_) {
+        state_ = AlertState::Alert;
+    }
+    
     return state_;
 }
 
