@@ -1,0 +1,13 @@
+# Artefacts de compilation — jamais versionnés.
+# Règle générale : on versionne ce qu'on écrit, pas ce qu'on génère.
+build/
+cmake-build-*/
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+
+# Systèmes
+.DS_Store
+Thumbs.db
