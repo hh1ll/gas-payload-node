@@ -1,47 +1,68 @@
 # ─────────────────────────────────────────────────────────────
 #  gas-payload-node — configuration de compilation principale
 # ─────────────────────────────────────────────────────────────
-#
-# CMake ne compile pas : il GÉNÈRE les fichiers de compilation
-# (des Makefile sous Linux) à partir de cette description.
-# D'où les deux commandes distinctes :
-#     cmake -B build      → génère
-#     cmake --build build → compile
-#
 cmake_minimum_required(VERSION 3.16)
 
 project(gas_payload_node
-        VERSION 0.1.0
+        VERSION 0.2.0
         LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)      # du C++ standard, pas des extensions GNU
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Les avertissements traités sérieusement. En embarqué, un warning
-# ignoré est un bug qui attend son tour.
-add_compile_options(-Wall -Wextra -Wpedantic)
+if(MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
 # ── La bibliothèque « core » ────────────────────────────────
 #
-# Point crucial pour la suite : cette cible ne dépend d'AUCUN
-# matériel. Elle compile pour ton PC comme pour un STM32.
-# C'est ce qui la rendra testable en intégration continue.
+# LA RÈGLE, ET ELLE N'A PAS D'EXCEPTION :
+#   aucun fichier de cette cible n'inclut d'en-tête matériel.
+#
+# C'est cette règle qui permet à `core` de compiler sur ton PC, sur un
+# serveur GitHub et sur un STM32 — le même code, sans une ligne de
+# différence. Le jour où tu es tenté d'ajouter ici un fichier qui
+# inclut un en-tête de fabricant, c'est le signe qu'il appartient à
+# `hal/`, pas à `core/`.
 #
 add_library(core
     src/core/GasMonitor.cpp
+    src/core/PayloadService.cpp
 )
 
 target_include_directories(core PUBLIC include)
 
+# ── La couche matérielle ────────────────────────────────────
+#
+# Le code du driver n'a PAS été supprimé — il a été mis derrière un
+# interrupteur. Par défaut il n'est pas construit, donc il ne gêne ni
+# ton PC ni la CI. Quand tu viseras la carte, en séance 6 :
+#
+#     cmake -B build-stm32 -DBUILD_HAL_STM32=ON \
+#           -DCMAKE_TOOLCHAIN_FILE=cmake/arm-none-eabi.cmake
+#
+# C'est la traduction en CMake de la frontière qu'on vient de tracer
+# dans le code.
+#
+option(BUILD_HAL_STM32 "Construire le driver STM32 (nécessite la chaîne ARM)" OFF)
+
+if(BUILD_HAL_STM32)
+    add_library(hal_stm32
+        src/hal/stm32/Mq135Driver.cpp
+    )
+    target_link_libraries(hal_stm32 PUBLIC core)
+endif()
+
 # ── Les tests ───────────────────────────────────────────────
-#
-# Optionnels : la carte n'a pas besoin d'embarquer GoogleTest.
-# On les active sur PC et dans la CI, jamais sur la cible.
-#
 option(BUILD_TESTS "Compiler les tests unitaires" ON)
 
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()
+
+# ── La démonstration ────────────────────────────────────────
+#add_subdirectory(demo)
