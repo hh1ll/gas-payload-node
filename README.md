@@ -1,9 +1,12 @@
 # gas-payload-node
 
+![CI](https://github.com/hh1ll/gas-payload-node/actions/workflows/ci.yml/badge.svg)
+
 Nœud de charge utile de détection de gaz pour aéronef autonome — surveillance
 de fuites de méthane depuis un drone ou un dirigeable.
 
-> **État : séance 1 / 6.** Socle logique + tests unitaires sur hôte.
+> **État : séance 2 / 6.** Socle logique, tests unitaires sur hôte,
+> vérification automatique à chaque modification.
 > Ni matériel ni intégration PX4 pour l'instant.
 
 ## Ce que fait ce dépôt aujourd'hui
@@ -37,7 +40,7 @@ capteur n'est branché.
 ## Feuille de route
 
 - [x] **1** — socle CMake, `GasMonitor`, tests sur hôte
-- [ ] **2** — intégration continue GitHub Actions
+- [x] **2** — intégration continue GitHub Actions
 - [ ] **3** — couche d'abstraction matérielle et implémentations factices
 - [ ] **4** — télémétrie MAVLink, visualisation dans QGroundControl
 - [ ] **5** — PX4 SITL en conteneur, test d'intégration automatisé

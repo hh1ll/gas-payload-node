@@ -1,0 +1,44 @@
+# ─────────────────────────────────────────────────────────────
+#  Intégration continue
+# ─────────────────────────────────────────────────────────────
+#
+# Ce fichier décrit un travail que GitHub exécutera sur SES machines,
+# pas sur la tienne. À chaque fois que tu envoies du code, une machine
+# Ubuntu neuve est allumée, ton dépôt y est cloné, et les étapes
+# ci-dessous sont jouées dans l'ordre.
+#
+# « Neuve » est le mot important : rien de ce que tu as installé chez
+# toi n'existe là-bas. Si ça compile ici, c'est que ton projet est
+# vraiment autonome — et pas seulement sur ta machine.
+
+name: CI
+
+# ── Quand déclencher ────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# ── Quoi exécuter ───────────────────────────────────────────
+jobs:
+  build-and-test:
+    name: Compilation et tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # `uses` appelle une action écrite par quelqu'un d'autre.
+      # checkout est celle qui clone ton dépôt sur la machine.
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      # `run` exécute une commande shell. Exactement les mêmes que
+      # celles que tu tapes chez toi — c'est tout l'intérêt : aucune
+      # commande secrète, rien que la CI saurait faire et pas toi.
+      - name: Configurer CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Compiler
+        run: cmake --build build -j
+
+      - name: Lancer les tests
+        run: ctest --test-dir build --output-on-failure
