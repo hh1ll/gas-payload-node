@@ -1,6 +1,6 @@
 # gas-payload-node
 
-![CI](https://github.com/hh1ll/gas-payload-node/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/hh1ll/gas-payload-node/actions/workflows/ci.yml/badge.svg)](https://github.com/hh1ll/gas-payload-node/actions/workflows/ci.yml)
 
 Nœud de charge utile de détection de gaz pour aéronef autonome — surveillance
 de fuites de méthane depuis un drone ou un dirigeable.
