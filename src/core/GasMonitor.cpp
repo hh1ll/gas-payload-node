@@ -2,52 +2,27 @@
 
 namespace core {
 
-// ─────────────────────────────────────────────────────────────
-//  À TOI DE JOUER
-// ─────────────────────────────────────────────────────────────
-//
-// Le squelette ci-dessous compile, mais la logique est fausse
-// exprès : update() ignore l'échantillon et ne bascule jamais.
-//
-// Lance les tests AVANT d'écrire quoi que ce soit :
-//
-//     cmake -B build && cmake --build build && ctest --test-dir build
-//
-// Tu dois voir des tests ROUGES. C'est normal, et c'est même le but :
-// un test qui n'a jamais échoué ne prouve rien — il pourrait très bien
-// ne rien vérifier du tout. Le voir échouer, c'est tester le test.
-//
-// Ensuite, implémente jusqu'à ce que tout passe au vert.
-//
-// Les trois règles à traduire en code :
-//   1. on démarre en Normal
-//   2. Normal → Alert  quand l'échantillon atteint ou dépasse rising_ppm_
-//   3. Alert  → Normal quand l'échantillon atteint ou descend sous falling_ppm_
-//   4. entre les deux : on ne change rien
-//
-// (Oui, il y a quatre points dans une liste de trois règles. La règle 4
-//  est celle qu'on oublie toujours, et c'est celle qui fait l'hystérésis.)
+    //ce code nous permet de créer un objet GasMonitor avec des seuils de déclenchement et de retour au calme, 
+    //et de mettre à jour l'état d'alerte en fonction de la concentration mesurée. 
+    //Il implémente également une hystérésis pour éviter les changements d'état fréquents lorsque la concentration oscille 
+    //autour des seuils.
 
 GasMonitor::GasMonitor(float rising_ppm, float falling_ppm)
     : rising_ppm_(rising_ppm),
       falling_ppm_(falling_ppm),
       state_(AlertState::Normal) {
-    // Question de conception à te poser : que faire si on te passe
-    // rising < falling ? Ignorer ? Échanger les deux ? Refuser ?
-    // Il n'y a pas de bonne réponse universelle — mais il y a une
-    // mauvaise pratique : ne pas décider, et laisser le comportement
-    // au hasard. Quoi que tu choisisses, écris le test qui le fige.
+    
 }
 
 AlertState GasMonitor::update(float concentration_ppm) {
-    
-    if (concentration_ppm <= falling_ppm_) {
+    //ici le but est d'instaurer une hystérésis, donc on ne change l'état que si on franchit les seuils
+    if (concentration_ppm <= falling_ppm_) {        //détermine la limite inférieure de la bande morte
         state_ = AlertState::Normal;
     } 
-    else if (concentration_ppm >= rising_ppm_) {
+    else if (concentration_ppm >= rising_ppm_) {    //détermine la limite supérieure de la bande morte
         state_ = AlertState::Alert;
     }
-    
+
     return state_;
 }
 
@@ -55,4 +30,4 @@ AlertState GasMonitor::state() const {
     return state_;
 }
 
-}  // namespace core
+} 
