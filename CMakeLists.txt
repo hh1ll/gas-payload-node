@@ -31,6 +31,8 @@ endif()
 add_library(core
     src/core/GasMonitor.cpp
     src/core/PayloadService.cpp
+    src/core/MavlinkEncoder.cpp
+    src/core/TelemetryReporter.cpp
 )
 
 target_include_directories(core PUBLIC include)
@@ -65,4 +67,15 @@ if(BUILD_TESTS)
 endif()
 
 # ── La démonstration ────────────────────────────────────────
-#add_subdirectory(demo)
+#
+# On vérifie que le dossier existe avant de l'inclure. Sans ce garde-fou,
+# un projet où `demo/` a été supprimé refuse de se configurer — et le
+# message d'erreur ne dit pas quoi faire. Un CMakeLists tolérant aux
+# absences est un CMakeLists qu'on peut cloner partiellement.
+#
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/demo/CMakeLists.txt)
+    add_subdirectory(demo)
+endif()
+
+# ── Outils de mise au point ─────────────────────────────────
+add_subdirectory(tools)

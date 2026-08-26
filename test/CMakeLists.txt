@@ -19,6 +19,8 @@ FetchContent_MakeAvailable(googletest)
 add_executable(test_core
     test_gas_monitor.cpp
     test_payload_service.cpp
+    test_mavlink_encoder.cpp
+    test_telemetry_reporter.cpp
 )
 
 target_link_libraries(test_core
