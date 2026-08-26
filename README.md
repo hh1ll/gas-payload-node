@@ -42,17 +42,7 @@ I had never set up a CI pipeline. Rather than claim to be "motivated to learn",
 I wanted to find out what the chain actually looks like end to end — sensor,
 decision, protocol, ground station, automated verification.
 
-I built it with an AI assistant acting as a tutor. Here is who wrote what:
-
-| Part | Authorship |
-|---|---|
-| `GasMonitor` — hysteresis decision logic | **written by me** |
-| `PayloadService::poll()` — sensor handling and health tracking | **written by me**, from a specification |
-| `TelemetryReporter::report()` — what to send and when | **written by me**, with guidance |
-| Unit tests | **written by me** |
-| `IGasSensor` / `ITelemetrySink` interfaces | provided; I chose to use them and I can explain why they exist |
-| `MavlinkEncoder` — frame layout, field ordering, CRC | provided — **studied, not authored** |
-| CMake and GitHub Actions configuration | provided; adapted and debugged by me |
+I built it with an AI assistant acting as a tutor.
 
 C++ is not a language I am fluent in yet. I am comfortable with the constructs
 this project uses, and I know where that comfort stops.
